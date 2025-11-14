@@ -12,7 +12,7 @@ model User {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   email        String   @unique
   password     String
-  name         String?
+  name         String
   phone        String?
   role         String   @default("user")
   refreshToken String?
