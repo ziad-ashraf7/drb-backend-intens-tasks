@@ -20,14 +20,12 @@ A robust authentication system built with NestJS, Prisma, MongoDB, and JWT token
 - **JWT** - JSON Web Tokens for authentication
 - **bcrypt** - Password hashing
 - **TypeScript** - Type-safe development
-- **Docker** - Containerization
 
 ## Prerequisites
 
 - Node.js (v18 or higher)
 - npm or yarn
 - MongoDB instance (local or remote)
-- Docker and Docker Compose (optional, for containerized setup)
 
 ## Installation
 
