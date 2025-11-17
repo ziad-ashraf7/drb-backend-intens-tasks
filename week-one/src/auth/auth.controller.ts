@@ -39,6 +39,7 @@ export class AuthController {
 		);
 	}
 
+	
 	@UseGuards(RtAuthGuard)
 	@Post('refresh')
 	async refresh(@Request() req, @Body() dto: RefreshTokenDto) {
