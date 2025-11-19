@@ -11,6 +11,9 @@ import { VehicleService } from './vehicle.service';
 import { CreateVehicleDto } from './dto/CreateVehicleDto.dto';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Role } from 'src/enums/roles.enum';
+import { RolesGuard } from 'src/guard/roles.guard';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('vehicles')
 export class VehicleController {
@@ -18,11 +21,12 @@ export class VehicleController {
 
 	// Create Vehicle -> POST /vehicles
 
-	@UseGuards(JwtAuthGuard)
+	@Roles(Role.ADMIN, Role.FLEET_MANAGER)
+	@UseGuards(JwtAuthGuard, RolesGuard)
 	@ApiBearerAuth()
 	@ApiOperation({
 		description:
-			'Create a new Vehicle, Onle Admin and Fleet manager can use this endpoint',
+			'Create a new Vehicle. Only Admin and Fleet Manager can use this endpoint',
 	})
 	@Post('/')
 	async CreateVehicle(@Body() dto: CreateVehicleDto) {

@@ -6,20 +6,27 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
-
+enum Role {
+  user
+  admin
+  fleet_manager
+}
 model User {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   email        String   @unique
   password     String
   name         String
   phone        String?
-  role         String   @default("user")
+  
+  role         Role   @default(user)
   refreshToken String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   vehicles Vehicle[]
 }
+
+
 
 model Vehicle {
   id           String @id @default(auto()) @map("_id") @db.ObjectId

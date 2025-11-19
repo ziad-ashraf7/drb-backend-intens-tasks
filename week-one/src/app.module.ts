@@ -8,8 +8,14 @@ import { UserModule } from './user/user.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, ConfigModule.forRoot({isGlobal: true}), UserModule, VehicleModule],
-  controllers: [AppController],
-  providers: [AppService],
+	imports: [
+		PrismaModule,
+		AuthModule,
+		ConfigModule.forRoot({ isGlobal: true }),
+		UserModule,
+		VehicleModule,
+	],
+	controllers: [AppController],
+	providers: [AppService],
 })
 export class AppModule {}
