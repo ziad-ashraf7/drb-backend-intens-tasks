@@ -1,0 +1,24 @@
+{
+	"auth": {
+		"LOGOUT_SUCCESS": "تم تسجيل الخروج بنجاح",
+		"PASSWORD_CHANGED": "تم تغيير كلمة المرور بنجاح",
+		"REGISTRATION_SUCCESS": "تم التسجيل بنجاح",
+		"LOGIN_SUCCESS": "تم تسجيل الدخول بنجاح",
+		"TOKEN_REFRESHED": "تم تحديث الرمز بنجاح"
+	},
+	"user": {
+		"PROFILE_UPDATED": "تم تحديث الملف الشخصي بنجاح",
+		"PROFILE_RETRIEVED": "تم استرجاع الملف الشخصي بنجاح"
+	},
+	"vehicle": {
+		"VEHICLE_CREATED": "تم إنشاء المركبة بنجاح",
+		"VEHICLE_UPDATED": "تم تحديث المركبة بنجاح",
+		"VEHICLE_DELETED": "تم حذف المركبة بنجاح",
+		"VEHICLE_RETRIEVED": "تم استرجاع المركبة بنجاح",
+		"VEHICLES_RETRIEVED": "تم استرجاع المركبات بنجاح"
+	},
+	"driver": {
+		"DRIVER_ASSIGNED": "تم تعيين السائق بنجاح",
+		"DRIVER_UNASSIGNED": "تم إلغاء تعيين السائق بنجاح"
+	}
+}

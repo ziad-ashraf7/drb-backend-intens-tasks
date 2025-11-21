@@ -1,0 +1,25 @@
+{
+	"auth": {
+		"INVALID_CREDENTIALS": "بيانات الاعتماد غير صالحة",
+		"UNAUTHORIZED": "وصول غير مصرح به",
+		"AUTHENTICATION_REQUIRED": "المصادقة مطلوبة",
+		"ACCESS_DENIED": "تم رفض الوصول. الأدوار المطلوبة: {roles}",
+		"CURRENT_PASSWORD_INCORRECT": "كلمة المرور الحالية غير صحيحة"
+	},
+	"user": {
+		"USER_NOT_FOUND": "المستخدم غير موجود",
+		"USER_ALREADY_EXISTS": "المستخدم موجود بالفعل"
+	},
+	"vehicle": {
+		"VEHICLE_NOT_FOUND": "تعذر العثور على المركبة برقم {id} ",
+		"VEHICLE_ALREADY_EXISTS": "هذه المركبة موجودة بالفعل",
+		"FAILED_TO_FETCH_VEHICLES": "فشل في جلب المركبات"
+	},
+	"driver": {
+		"DRIVER_NOT_FOUND": "تعذر العثور على السائق برقم {id}",
+		"DRIVER_ALREADY_ASSIGNED": "السائق مخصص بالفعل للمركبة ذات رقم اللوحة {plateNumber}",
+		"VEHICLE_HAS_DRIVER": "المركبة لديها سائق مخصص بالفعل. يرجى إلغاء تعيين السائق الحالي أولاً.",
+		"NO_DRIVER_ASSIGNED": "المركبة لا تحتوي على سائق مخصص",
+		"CANT_FIND_DRIVER": "لا يمكن العثور على هذا السائق"
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"auth": {
+		"LOGOUT_SUCCESS": "Logged out successfully",
+		"PASSWORD_CHANGED": "Password changed successfully",
+		"REGISTRATION_SUCCESS": "Registration successful",
+		"LOGIN_SUCCESS": "Logged in successful",
+		"TOKEN_REFRESHED": "Token refreshed successfully"
+	},
+	"user": {
+		"PROFILE_UPDATED": "Profile updated successfully",
+		"PROFILE_RETRIEVED": "Profile retrieved successfully"
+	},
+	"vehicle": {
+		"VEHICLE_CREATED": "Vehicle created successfully",
+		"VEHICLE_UPDATED": "Vehicle updated successfully",
+		"VEHICLE_DELETED": "Vehicle deleted successfully",
+		"VEHICLE_RETRIEVED": "Vehicle retrieved successfully",
+		"VEHICLES_RETRIEVED": "Vehicles retrieved successfully"
+	},
+	"driver": {
+		"DRIVER_ASSIGNED": "Driver assigned successfully",
+		"DRIVER_UNASSIGNED": "Driver unassigned successfully"
+	}
+}

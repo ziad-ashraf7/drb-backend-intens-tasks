@@ -1,0 +1,25 @@
+{
+	"auth": {
+		"INVALID_CREDENTIALS": "Invalid credentials",
+		"UNAUTHORIZED": "Unauthorized access",
+		"AUTHENTICATION_REQUIRED": "Authentication required",
+		"ACCESS_DENIED": "Access denied. Required roles: {roles}",
+		"CURRENT_PASSWORD_INCORRECT": "Current password is incorrect"
+	},
+	"user": {
+		"USER_NOT_FOUND": "User not found",
+		"USER_ALREADY_EXISTS": "User already exists"
+	},
+	"vehicle": {
+		"VEHICLE_NOT_FOUND": "Vehicle with ID {id} not found",
+		"VEHICLE_ALREADY_EXISTS": "This vehicle already exists",
+		"FAILED_TO_FETCH_VEHICLES": "Failed to fetch vehicles"
+	},
+	"driver": {
+		"DRIVER_NOT_FOUND": "Driver with ID {id} not found",
+		"DRIVER_ALREADY_ASSIGNED": "Driver is already assigned to vehicle with plate number {plateNumber}",
+		"VEHICLE_HAS_DRIVER": "Vehicle already has an assigned driver. Please unassign the current driver first.",
+		"NO_DRIVER_ASSIGNED": "Vehicle does not have an assigned driver",
+		"CANT_FIND_DRIVER": "Can't find this driver"
+	}
+}

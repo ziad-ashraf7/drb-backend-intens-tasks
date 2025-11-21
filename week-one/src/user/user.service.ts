@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateProfileDto } from './dto';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class UserService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private i18n: I18nService,
+	) {}
 
 	async updateProfile(userId: string, dto: UpdateProfileDto) {
 		const user = await this.prisma.user.findUnique({
@@ -12,7 +16,11 @@ export class UserService {
 		});
 
 		if (!user) {
-			throw new NotFoundException('User not found');
+			throw new NotFoundException(
+				await this.i18n.translate('exceptions.user.USER_NOT_FOUND', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 		}
 
 		const updatedUser = await this.prisma.user.update({
@@ -32,7 +40,12 @@ export class UserService {
 			},
 		});
 
-		return updatedUser;
+		return {
+			message: await this.i18n.translate('messages.user.PROFILE_UPDATED', {
+				lang: I18nContext.current()?.lang,
+			}),
+			user: updatedUser,
+		};
 	}
 
 	async getProfile(userId: string) {
@@ -50,9 +63,18 @@ export class UserService {
 		});
 
 		if (!user) {
-			throw new NotFoundException('User not found');
+			throw new NotFoundException(
+				await this.i18n.translate('exceptions.user.USER_NOT_FOUND', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 		}
 
-		return user;
+		return {
+			message: await this.i18n.translate('messages.user.PROFILE_RETRIEVED', {
+				lang: I18nContext.current()?.lang,
+			}),
+			user,
+		};
 	}
 }

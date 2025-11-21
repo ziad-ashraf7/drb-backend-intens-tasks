@@ -1,0 +1,47 @@
+{
+	"common": {
+		"IS_NOT_EMPTY": "{property} should not be empty",
+		"IS_STRING": "{property} must be a string",
+		"IS_NUMBER": "{property} must be a number",
+		"IS_EMAIL": "{property} must be a valid email address",
+		"IS_OPTIONAL": "{property} is optional",
+		"MIN_LENGTH": "{property} must be at least {min} characters long",
+		"MAX_LENGTH": "{property} must be at most {max} characters long",
+		"MIN_VALUE": "{property} must be at least {min}",
+		"MAX_VALUE": "{property} must be at most {max}",
+		"IS_MONGO_ID": "{property} must be a valid MongoDB ID",
+		"IS_ENUM": "{property} must be one of the following values: {values}",
+		"IS_IN": "{property} must be one of the following values: {values}",
+		"IS_INT": "{property} must be an integer"
+	},
+	"auth": {
+		"EMAIL_REQUIRED": "Email is required",
+		"EMAIL_INVALID": "Please provide a valid email address",
+		"PASSWORD_REQUIRED": "Password is required",
+		"PASSWORD_MIN_LENGTH": "Password must be at least 8 characters long",
+		"NAME_REQUIRED": "Name is required",
+		"ROLE_INVALID": "Role must be one of: {roles}",
+		"CURRENT_PASSWORD_REQUIRED": "Current password is required",
+		"NEW_PASSWORD_REQUIRED": "New password is required",
+		"NEW_PASSWORD_MIN_LENGTH": "New password must be at least 8 characters long",
+		"REFRESH_TOKEN_REQUIRED": "Refresh token is required",
+		"USER_ID_REQUIRED": "User ID is required"
+	},
+	"vehicle": {
+		"PLATE_NUMBER_REQUIRED": "Plate number is required",
+		"MODEL_REQUIRED": "Model is required",
+		"MANUFACTURER_REQUIRED": "Manufacturer is required",
+		"YEAR_REQUIRED": "Year is required",
+		"YEAR_NUMBER": "Year must be a number",
+		"YEAR_MIN": "Year must be at least 1980",
+		"YEAR_MAX": "Year must be at most {currentYear}",
+		"TYPE_REQUIRED": "Type is required",
+		"DRIVER_ID_REQUIRED": "Driver ID is required",
+		"PAGE_MIN": "Page must be at least 1",
+		"LIMIT_NUMBER": "Limit must be a number",
+		"LIMIT_MIN": "Limit must be at least 1",
+		"LIMIT_MAX": "Limit must be at most 100",
+		"SORT_ORDER_INVALID": "Sort order must be either 'asc' or 'desc'",
+		"ASSIGNED_INVALID": "Assigned must be either 'true' or 'false'"
+	}
+}

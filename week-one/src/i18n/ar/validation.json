@@ -1,0 +1,47 @@
+{
+	"common": {
+		"IS_NOT_EMPTY": "{property} لا يجب أن يكون فارغاً",
+		"IS_STRING": "{property} يجب أن يكون نصاً",
+		"IS_NUMBER": "{property} يجب أن يكون رقماً",
+		"IS_EMAIL": "{property} يجب أن يكون عنوان بريد إلكتروني صالح",
+		"IS_OPTIONAL": "{property} اختياري",
+		"MIN_LENGTH": "{property} يجب ألا يقل عن {min} أحرف",
+		"MAX_LENGTH": "{property} يجب ألا يزيد عن {max} أحرف",
+		"MIN_VALUE": "{property} يجب أن يكون على الأقل {min}",
+		"MAX_VALUE": "{property} يجب أن يكون على الأكثر {max}",
+		"IS_MONGO_ID": "{property} يجب أن يكون معرف MongoDB صالح",
+		"IS_ENUM": "{property} يجب أن يكون أحد القيم التالية: {values}",
+		"IS_IN": "{property} يجب أن يكون أحد القيم التالية: {values}",
+		"IS_INT": "{property} يجب أن يكون عدداً صحيحاً"
+	},
+	"auth": {
+		"EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+		"EMAIL_INVALID": "يرجى تقديم بريد إلكتروني صالح",
+		"PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
+		"PASSWORD_MIN_LENGTH": "يجب ألا تقل كلمة المرور عن 8 أحرف",
+		"NAME_REQUIRED": "الاسم مطلوب",
+		"ROLE_INVALID": "يجب أن يكون الدور أحد القيم التالية: {roles}",
+		"CURRENT_PASSWORD_REQUIRED": "كلمة المرور الحالية مطلوبة",
+		"NEW_PASSWORD_REQUIRED": "كلمة المرور الجديدة مطلوبة",
+		"NEW_PASSWORD_MIN_LENGTH": "يجب ألا تقل كلمة المرور الجديدة عن 8 أحرف",
+		"REFRESH_TOKEN_REQUIRED": "رمز التحديث مطلوب",
+		"USER_ID_REQUIRED": "معرف المستخدم مطلوب"
+	},
+	"vehicle": {
+		"PLATE_NUMBER_REQUIRED": "رقم اللوحة مطلوب",
+		"MODEL_REQUIRED": "الموديل مطلوب",
+		"MANUFACTURER_REQUIRED": "الشركة المصنعة مطلوبة",
+		"YEAR_REQUIRED": "السنة مطلوبة",
+		"YEAR_NUMBER": "يجب أن تكون السنة رقماً",
+		"YEAR_MIN": "يجب ألا تقل السنة عن 1980",
+		"YEAR_MAX": "يجب ألا تتجاوز السنة {currentYear}",
+		"TYPE_REQUIRED": "النوع مطلوب",
+		"DRIVER_ID_REQUIRED": "معرف السائق مطلوب",
+		"PAGE_MIN": "يجب ألا يقل رقم الصفحة عن 1",
+		"LIMIT_NUMBER": "يجب أن يكون الحد رقماً",
+		"LIMIT_MIN": "يجب ألا يقل الحد عن 1",
+		"LIMIT_MAX": "يجب ألا يزيد الحد عن 100",
+		"SORT_ORDER_INVALID": "يجب أن يكون ترتيب الفرز إما 'asc' أو 'desc'",
+		"ASSIGNED_INVALID": "يجب أن تكون قيمة التعيين إما 'true' أو 'false'"
+	}
+}

@@ -10,16 +10,26 @@ import { PaginationUtil } from 'src/common/utils/pagination.util';
 import { PaginatedResult } from 'src/common/interfaces/pagination.interface';
 import { Vehicle } from '@prisma/client';
 import { UpdateVehicleDto } from './dto/UpdateVehicleDto.dto';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class VehicleService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private i18n: I18nService,
+	) {}
+
 	async updateVehicle(id: string, dto: UpdateVehicleDto) {
 		// Check if the vehicle exists
 		const vehicle = await this.prisma.vehicle.findUnique({ where: { id } });
 
 		if (!vehicle) {
-			throw new NotFoundException(`Vehicle with ID ${id} not found`);
+			throw new NotFoundException(
+				await this.i18n.translate('exceptions.vehicle.VEHICLE_NOT_FOUND', {
+					lang: I18nContext.current()?.lang,
+					args: { id },
+				}),
+			);
 		}
 
 		// If driverId is explicitly provided in the DTO, validate the driver
@@ -30,7 +40,12 @@ export class VehicleService {
 			});
 
 			if (!driver) {
-				throw new NotFoundException(`Driver with ID ${dto.driverId} not found`);
+				throw new NotFoundException(
+					await this.i18n.translate('exceptions.driver.DRIVER_NOT_FOUND', {
+						lang: I18nContext.current()?.lang,
+						args: { id: dto.driverId },
+					}),
+				);
 			}
 
 			// Check if driver is already assigned to another vehicle
@@ -43,7 +58,10 @@ export class VehicleService {
 
 			if (assignedVehicle) {
 				throw new ConflictException(
-					`Driver is already assigned to vehicle with plate number ${assignedVehicle.plateNumber}`,
+					await this.i18n.translate('exceptions.driver.DRIVER_ALREADY_ASSIGNED', {
+						lang: I18nContext.current()?.lang,
+						args: { plateNumber: assignedVehicle.plateNumber },
+					}),
 				);
 			}
 		}
@@ -59,7 +77,12 @@ export class VehicleService {
 			},
 		});
 
-		return updatedVehicle;
+		return {
+			message: await this.i18n.translate('messages.vehicle.VEHICLE_UPDATED', {
+				lang: I18nContext.current()?.lang,
+			}),
+			vehicle: updatedVehicle,
+		};
 	}
 
 	async GetVehicleById(id: string): Promise<Vehicle> {
@@ -78,7 +101,12 @@ export class VehicleService {
 		});
 
 		if (!vehicle) {
-			throw new NotFoundException(`Vehicle with ID ${id} not found`);
+			throw new NotFoundException(
+				await this.i18n.translate('exceptions.vehicle.VEHICLE_NOT_FOUND', {
+					lang: I18nContext.current()?.lang,
+					args: { id },
+				}),
+			);
 		}
 
 		return vehicle;
@@ -143,11 +171,15 @@ export class VehicleService {
 
 			return PaginationUtil.paginate(vehicles, total, page, limit);
 		} catch (error) {
-			throw new BadRequestException('Failed to fetch vehicles');
+			throw new BadRequestException(
+				await this.i18n.translate('exceptions.vehicle.FAILED_TO_FETCH_VEHICLES', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 		}
 	}
 
-	async CreateVehicle(dto: CreateVehicleDto): Promise<Vehicle> {
+	async CreateVehicle(dto: CreateVehicleDto) {
 		// check if exite before
 		const exite = await this.prisma.vehicle.findFirst({
 			where: { plateNumber: dto.plateNumber },
@@ -155,7 +187,11 @@ export class VehicleService {
 
 		// if yes, throw conflict error
 		if (exite) {
-			throw new ConflictException('This vehicle already exists');
+			throw new ConflictException(
+				await this.i18n.translate('exceptions.vehicle.VEHICLE_ALREADY_EXISTS', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 		}
 
 		// if not , then check about the driver if his id is correct or no
@@ -165,7 +201,11 @@ export class VehicleService {
 				where: { id: driverId },
 			});
 			if (!driver) {
-				throw new NotFoundException("Can't find this driver");
+				throw new NotFoundException(
+					await this.i18n.translate('exceptions.driver.CANT_FIND_DRIVER', {
+						lang: I18nContext.current()?.lang,
+					}),
+				);
 			}
 		}
 
@@ -193,7 +233,12 @@ export class VehicleService {
 			},
 		});
 
-		return vehicle;
+		return {
+			message: await this.i18n.translate('messages.vehicle.VEHICLE_CREATED', {
+				lang: I18nContext.current()?.lang,
+			}),
+			vehicle,
+		};
 	}
 
 	async deleteVehicle(id: string) {
@@ -203,7 +248,12 @@ export class VehicleService {
 		});
 
 		if (!vehicle) {
-			throw new NotFoundException(`Vehicle with ID ${id} not found`);
+			throw new NotFoundException(
+				await this.i18n.translate('exceptions.vehicle.VEHICLE_NOT_FOUND', {
+					lang: I18nContext.current()?.lang,
+					args: { id },
+				}),
+			);
 		}
 
 		// Delete the vehicle
@@ -212,7 +262,9 @@ export class VehicleService {
 		});
 
 		return {
-			message: 'Vehicle deleted successfully',
+			message: await this.i18n.translate('messages.vehicle.VEHICLE_DELETED', {
+				lang: I18nContext.current()?.lang,
+			}),
 			deletedVehicle: {
 				id: vehicle.id,
 				plateNumber: vehicle.plateNumber,
@@ -229,13 +281,20 @@ export class VehicleService {
 		});
 
 		if (!vehicle) {
-			throw new NotFoundException(`Vehicle with ID ${vehicleId} not found`);
+			throw new NotFoundException(
+				await this.i18n.translate('exceptions.vehicle.VEHICLE_NOT_FOUND', {
+					lang: I18nContext.current()?.lang,
+					args: { id: vehicleId },
+				}),
+			);
 		}
 
 		// Check if vehicle already has a driver
 		if (vehicle.driverId) {
 			throw new ConflictException(
-				'Vehicle already has an assigned driver. Please unassign the current driver first.',
+				await this.i18n.translate('exceptions.driver.VEHICLE_HAS_DRIVER', {
+					lang: I18nContext.current()?.lang,
+				}),
 			);
 		}
 
@@ -245,7 +304,12 @@ export class VehicleService {
 		});
 
 		if (!driver) {
-			throw new NotFoundException(`Driver with ID ${driverId} not found`);
+			throw new NotFoundException(
+				await this.i18n.translate('exceptions.driver.DRIVER_NOT_FOUND', {
+					lang: I18nContext.current()?.lang,
+					args: { id: driverId },
+				}),
+			);
 		}
 
 		// Check if driver is already assigned to another vehicle
@@ -255,7 +319,10 @@ export class VehicleService {
 
 		if (assignedVehicle) {
 			throw new ConflictException(
-				`Driver is already assigned to vehicle with plate number ${assignedVehicle.plateNumber}`,
+				await this.i18n.translate('exceptions.driver.DRIVER_ALREADY_ASSIGNED', {
+					lang: I18nContext.current()?.lang,
+					args: { plateNumber: assignedVehicle.plateNumber },
+				}),
 			);
 		}
 
@@ -271,7 +338,9 @@ export class VehicleService {
 		});
 
 		return {
-			message: 'Driver assigned successfully',
+			message: await this.i18n.translate('messages.driver.DRIVER_ASSIGNED', {
+				lang: I18nContext.current()?.lang,
+			}),
 			vehicle: updatedVehicle,
 		};
 	}
@@ -283,12 +352,21 @@ export class VehicleService {
 		});
 
 		if (!vehicle) {
-			throw new NotFoundException(`Vehicle with ID ${vehicleId} not found`);
+			throw new NotFoundException(
+				await this.i18n.translate('exceptions.vehicle.VEHICLE_NOT_FOUND', {
+					lang: I18nContext.current()?.lang,
+					args: { id: vehicleId },
+				}),
+			);
 		}
 
 		// Check if vehicle has an assigned driver
 		if (!vehicle.driverId) {
-			throw new BadRequestException('Vehicle does not have an assigned driver');
+			throw new BadRequestException(
+				await this.i18n.translate('exceptions.driver.NO_DRIVER_ASSIGNED', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 		}
 
 		// Unassign driver from vehicle
@@ -310,7 +388,9 @@ export class VehicleService {
 		});
 
 		return {
-			message: 'Driver unassigned successfully',
+			message: await this.i18n.translate('messages.driver.DRIVER_UNASSIGNED', {
+				lang: I18nContext.current()?.lang,
+			}),
 			vehicle: updatedVehicle,
 		};
 	}

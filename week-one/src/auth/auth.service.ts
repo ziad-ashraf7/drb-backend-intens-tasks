@@ -10,6 +10,7 @@ import { RegisterDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/JwtPayload';
 import { Role } from 'src/enums/roles.enum';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
 		private prisma: PrismaService,
 		private config: ConfigService,
 		private jwtService: JwtService,
+		private i18n: I18nService,
 	) {}
 
 	async getAccessToken(payload: JwtPayload) {
@@ -34,20 +36,21 @@ export class AuthService {
 	}
 
 	async register(dto: RegisterDto) {
-		// check if the user allready exit (email)
 		const userEmail = dto.email;
 		const exit = await this.prisma.user.findUnique({
 			where: { email: userEmail },
 		});
 
 		if (exit) {
-			throw new ConflictException('User already exit');
+			throw new ConflictException(
+				await this.i18n.translate('exceptions.user.USER_ALREADY_EXISTS', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 		}
-		// if not exite, then go throgh the creating user process ...
 
 		// getting the hashing salt
 		const salt = parseInt(this.config.get('BCRYPT_SALT_ROUNDS') || '10', 10);
-
 
 		// getting the user password (plain text)
 		const password = dto.password;
@@ -98,21 +101,34 @@ export class AuthService {
 			data: { refreshToken: hashedRefresh },
 		});
 
-		return { user, accessToken, refreshToken };
+		return {
+			message: await this.i18n.translate('messages.auth.REGISTRATION_SUCCESS', {
+				lang: I18nContext.current()?.lang,
+			}),
+			user,
+			accessToken,
+			refreshToken,
+		};
 	}
 
-	async validateUser(email: string, pass: string) {}
-
 	async login(email: string, password: string) {
-		// search if the user exit
 		const user = await this.prisma.user.findUnique({ where: { email: email } });
-		// if not , throw a unathorized exception
+
 		if (!user) {
-			throw new UnauthorizedException('Invalid credentials');
+			throw new UnauthorizedException(
+				await this.i18n.translate('exceptions.auth.INVALID_CREDENTIALS', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 		}
 
 		const match = await bcrypt.compare(password, user.password);
-		if (!match) throw new UnauthorizedException('Invalid credentials');
+		if (!match)
+			throw new UnauthorizedException(
+				await this.i18n.translate('exceptions.auth.INVALID_CREDENTIALS', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 
 		const payload: JwtPayload = {
 			sub: user.id,
@@ -139,8 +155,10 @@ export class AuthService {
 			data: { refreshToken: hashedRefresh },
 		});
 
-		// else return the user
 		return {
+			message: await this.i18n.translate('messages.auth.LOGIN_SUCCESS', {
+				lang: I18nContext.current()?.lang,
+			}),
 			accessToken: accessToken,
 			refreshToken: refreshToken,
 			user: {
@@ -158,15 +176,29 @@ export class AuthService {
 			where: { id: userId },
 			data: { refreshToken: null },
 		});
-		return { message: 'Logged out' };
+		return {
+			message: await this.i18n.translate('messages.auth.LOGOUT_SUCCESS', {
+				lang: I18nContext.current()?.lang,
+			}),
+		};
 	}
 
 	async refreshTokens(userId: string, refreshToken: string) {
 		const user = await this.prisma.user.findUnique({ where: { id: userId } });
-		if (!user || !user.refreshToken) throw new UnauthorizedException();
+		if (!user || !user.refreshToken)
+			throw new UnauthorizedException(
+				await this.i18n.translate('exceptions.auth.UNAUTHORIZED', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 
 		const matches = await bcrypt.compare(refreshToken, user.refreshToken);
-		if (!matches) throw new UnauthorizedException();
+		if (!matches)
+			throw new UnauthorizedException(
+				await this.i18n.translate('exceptions.auth.UNAUTHORIZED', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 
 		const payload = { sub: user.id, email: user.email, role: user.role };
 		const accessToken = await this.getAccessToken(payload);
@@ -182,7 +214,13 @@ export class AuthService {
 			data: { refreshToken: hashedRefresh },
 		});
 
-		return { accessToken, refreshToken: newRefreshToken };
+		return {
+			message: await this.i18n.translate('messages.auth.TOKEN_REFRESHED', {
+				lang: I18nContext.current()?.lang,
+			}),
+			accessToken,
+			refreshToken: newRefreshToken,
+		};
 	}
 
 	async changePassword(
@@ -195,13 +233,21 @@ export class AuthService {
 		});
 
 		if (!user) {
-			throw new UnauthorizedException('User not found');
+			throw new UnauthorizedException(
+				await this.i18n.translate('exceptions.user.USER_NOT_FOUND', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 		}
 
 		const passwordMatches = await bcrypt.compare(currentPassword, user.password);
 
 		if (!passwordMatches) {
-			throw new UnauthorizedException('Current password is incorrect');
+			throw new UnauthorizedException(
+				await this.i18n.translate('exceptions.auth.CURRENT_PASSWORD_INCORRECT', {
+					lang: I18nContext.current()?.lang,
+				}),
+			);
 		}
 
 		const saltRounds = parseInt(
@@ -215,6 +261,10 @@ export class AuthService {
 			data: { password: hashedPassword, refreshToken: null },
 		});
 
-		return { message: 'Password changed successfully' };
+		return {
+			message: await this.i18n.translate('messages.auth.PASSWORD_CHANGED', {
+				lang: I18nContext.current()?.lang,
+			}),
+		};
 	}
 }
