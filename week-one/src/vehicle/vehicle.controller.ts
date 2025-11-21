@@ -1,7 +1,9 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
+	HttpCode,
 	Param,
 	Patch,
 	Post,
@@ -56,16 +58,24 @@ export class VehicleController {
 	@ApiBearerAuth()
 	@ApiOperation({
 		summary: 'Update vehicle',
-		description: 'Update vehicle details. Only Admin and Fleet Manager can use this endpoint',
+		description:
+			'Update vehicle details. Only Admin and Fleet Manager can use this endpoint',
 	})
 	@Patch(':id')
 	async UpdateVehicle(@Param('id') id: string, @Body() dto: UpdateVehicleDto) {
 		return this.vehicleService.updateVehicle(id, dto);
 	}
 
-	@ApiOperation({ summary: 'Delete vehicle' })
+	@Roles(Role.ADMIN)
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Delete vehicle',
+		description: 'Delete a vehicle. Only Admin can use this endpoint',
+	})
+	@Delete(':id')
 	async DeleteVehicle(@Param('id') id: string) {
-		// TODO: Implement delete logic
+		return this.vehicleService.deleteVehicle(id);
 	}
 
 	@ApiOperation({ summary: 'Assign driver to vehicle' })

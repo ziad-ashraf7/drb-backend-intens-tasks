@@ -64,7 +64,6 @@ export class VehicleService {
 		return updatedVehicle;
 	}
 
-
 	async GetVehicleById(id: string): Promise<Vehicle> {
 		const vehicle = await this.prisma.vehicle.findUnique({
 			where: { id },
@@ -199,6 +198,29 @@ export class VehicleService {
 		return vehicle;
 	}
 
+	async deleteVehicle(id: string) {
+		// Check if the vehicle exists
+		const vehicle = await this.prisma.vehicle.findUnique({
+			where: { id },
+		});
 
+		if (!vehicle) {
+			throw new NotFoundException(`Vehicle with ID ${id} not found`);
+		}
 
+		// Delete the vehicle
+		await this.prisma.vehicle.delete({
+			where: { id },
+		});
+
+		return {
+			message: 'Vehicle deleted successfully',
+			deletedVehicle: {
+				id: vehicle.id,
+				plateNumber: vehicle.plateNumber,
+				model: vehicle.model,
+				manufacturer: vehicle.manufacturer,
+			},
+		};
+	}
 }
