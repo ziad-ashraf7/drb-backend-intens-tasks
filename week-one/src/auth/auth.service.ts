@@ -11,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/JwtPayload';
 import { Role } from 'src/enums/roles.enum';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { AppCacheService } from 'src/cache/cache.service';
+import { CacheKeys } from 'src/cache/cache-keys.util';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +21,7 @@ export class AuthService {
 		private config: ConfigService,
 		private jwtService: JwtService,
 		private i18n: I18nService,
+		private cache: AppCacheService,
 	) {}
 
 	async getAccessToken(payload: JwtPayload) {
@@ -176,6 +179,11 @@ export class AuthService {
 			where: { id: userId },
 			data: { refreshToken: null },
 		});
+
+		// Invalidate user cache
+		await this.cache.del(CacheKeys.userProfile(userId));
+		await this.cache.del(CacheKeys.userTokens(userId));
+
 		return {
 			message: await this.i18n.translate('messages.auth.LOGOUT_SUCCESS', {
 				lang: I18nContext.current()?.lang,
@@ -260,6 +268,11 @@ export class AuthService {
 			where: { id: userId },
 			data: { password: hashedPassword, refreshToken: null },
 		});
+
+		// Invalidate user cache
+		await this.cache.del(CacheKeys.userProfile(userId));
+		await this.cache.del(CacheKeys.userTokens(userId));
+		await this.cache.del(CacheKeys.userByEmail(user.email));
 
 		return {
 			message: await this.i18n.translate('messages.auth.PASSWORD_CHANGED', {

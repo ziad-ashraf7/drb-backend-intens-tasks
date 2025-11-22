@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import { AppCacheModule } from './cache/cache.module';
 import * as path from 'path';
 @Module({
 	imports: [
@@ -30,6 +31,7 @@ import * as path from 'path';
 		ConfigModule.forRoot({ isGlobal: true }),
 		UserModule,
 		VehicleModule,
+		AppCacheModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

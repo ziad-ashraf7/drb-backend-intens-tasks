@@ -11,12 +11,15 @@ import { PaginatedResult } from 'src/common/interfaces/pagination.interface';
 import { Vehicle } from '@prisma/client';
 import { UpdateVehicleDto } from './dto/UpdateVehicleDto.dto';
 import { I18nContext, I18nService } from 'nestjs-i18n';
+import { AppCacheService } from 'src/cache/cache.service';
+import { CacheKeys } from 'src/cache/cache-keys.util';
 
 @Injectable()
 export class VehicleService {
 	constructor(
 		private prisma: PrismaService,
 		private i18n: I18nService,
+		private cache: AppCacheService,
 	) {}
 
 	async updateVehicle(id: string, dto: UpdateVehicleDto) {
@@ -52,7 +55,7 @@ export class VehicleService {
 			const assignedVehicle = await this.prisma.vehicle.findFirst({
 				where: {
 					driverId: dto.driverId,
-					NOT: { id }, // Exclude current vehicle
+					NOT: { id },
 				},
 			});
 
@@ -66,7 +69,7 @@ export class VehicleService {
 			}
 		}
 
-		// Update the vehicle (only with provided fields)
+		// Update the vehicle
 		const updatedVehicle = await this.prisma.vehicle.update({
 			where: { id },
 			data: dto,
@@ -77,6 +80,19 @@ export class VehicleService {
 			},
 		});
 
+		// Invalidate cache
+		await this.cache.clearAll();
+
+		// TODO: Fix the clear prefix function bug
+		// await this.cache.del(CacheKeys.vehicle(id));
+		// await this.cache.clearPrefix(CacheKeys.VEHICLE_PREFIX);
+		// if (vehicle.driverId) {
+		// 	await this.cache.del(CacheKeys.vehiclesByDriver(vehicle.driverId));
+		// }
+		// if (dto.driverId) {
+		// 	await this.cache.del(CacheKeys.vehiclesByDriver(dto.driverId));
+		// }
+
 		return {
 			message: await this.i18n.translate('messages.vehicle.VEHICLE_UPDATED', {
 				lang: I18nContext.current()?.lang,
@@ -86,6 +102,13 @@ export class VehicleService {
 	}
 
 	async GetVehicleById(id: string): Promise<Vehicle> {
+		// Check cache first
+		const cacheKey = CacheKeys.vehicle(id);
+		const cached = await this.cache.get<Vehicle>(cacheKey);
+		if (cached) {
+			return cached;
+		}
+
 		const vehicle = await this.prisma.vehicle.findUnique({
 			where: { id },
 			include: {
@@ -109,6 +132,9 @@ export class VehicleService {
 			);
 		}
 
+		// Cache for 5 minutes
+		await this.cache.set(cacheKey, vehicle, 300000);
+
 		return vehicle;
 	}
 
@@ -124,6 +150,16 @@ export class VehicleService {
 			manufacturer,
 			assigned,
 		} = query;
+
+		const cacheKey = CacheKeys.vehicles(JSON.stringify(query));
+
+		// Check cache first
+		const cached = await this.cache.get<PaginatedResult<Vehicle>>(cacheKey);
+		if (cached) {
+			console.log(cached);
+			return cached;
+		}
+		console.log('Helloooooooooooo');
 
 		// Build where clause for filtering
 		const where: any = {};
@@ -169,7 +205,12 @@ export class VehicleService {
 				this.prisma.vehicle.count({ where }),
 			]);
 
-			return PaginationUtil.paginate(vehicles, total, page, limit);
+			const result = PaginationUtil.paginate(vehicles, total, page, limit);
+
+			// Cache for 5 minutes
+			await this.cache.set(cacheKey, result, 300000);
+
+			return result;
 		} catch (error) {
 			throw new BadRequestException(
 				await this.i18n.translate('exceptions.vehicle.FAILED_TO_FETCH_VEHICLES', {
@@ -233,6 +274,17 @@ export class VehicleService {
 			},
 		});
 
+		await this.cache.clearAll();
+
+		// TODO: Fix the clear prefix function bug
+		// await this.cache.clearPrefix(CacheKeys.VEHICLE_LIST_PREFIX);
+
+		// await this.cache.del(CacheKeys.vehicle(vehicle.id));
+
+		// if (dto.driverId) {
+		// 	await this.cache.del(CacheKeys.vehiclesByDriver(dto.driverId));
+		// }
+
 		return {
 			message: await this.i18n.translate('messages.vehicle.VEHICLE_CREATED', {
 				lang: I18nContext.current()?.lang,
@@ -260,6 +312,16 @@ export class VehicleService {
 		await this.prisma.vehicle.delete({
 			where: { id },
 		});
+
+		// Invalidate cache
+		await this.cache.clearAll();
+
+		// TODO: Fix the clear prefix function bug
+		// await this.cache.del(CacheKeys.vehicle(id));
+		// await this.cache.clearPrefix(CacheKeys.VEHICLE_PREFIX);
+		// if (vehicle.driverId) {
+		// 	await this.cache.del(CacheKeys.vehiclesByDriver(vehicle.driverId));
+		// }
 
 		return {
 			message: await this.i18n.translate('messages.vehicle.VEHICLE_DELETED', {
@@ -337,6 +399,14 @@ export class VehicleService {
 			},
 		});
 
+		// Invalidate cache
+		await this.cache.clearAll();
+
+		// TODO: Fix the clear prefix function bug
+		// await this.cache.del(CacheKeys.vehicle(vehicleId));
+		// await this.cache.clearPrefix(CacheKeys.VEHICLE_PREFIX);
+		// await this.cache.del(CacheKeys.vehiclesByDriver(driverId));
+
 		return {
 			message: await this.i18n.translate('messages.driver.DRIVER_ASSIGNED', {
 				lang: I18nContext.current()?.lang,
@@ -369,6 +439,8 @@ export class VehicleService {
 			);
 		}
 
+		const oldDriverId = vehicle.driverId;
+
 		// Unassign driver from vehicle
 		const updatedVehicle = await this.prisma.vehicle.update({
 			where: { id: vehicleId },
@@ -386,6 +458,14 @@ export class VehicleService {
 				updatedAt: true,
 			},
 		});
+
+		// Invalidate cache
+		await this.cache.clearAll();
+
+		// TODO: Fix the clear prefix function bug
+		// await this.cache.del(CacheKeys.vehicle(vehicleId));
+		// await this.cache.clearPrefix(CacheKeys.VEHICLE_PREFIX);
+		// await this.cache.del(CacheKeys.vehiclesByDriver(oldDriverId));
 
 		return {
 			message: await this.i18n.translate('messages.driver.DRIVER_UNASSIGNED', {

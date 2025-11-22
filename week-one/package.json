@@ -24,6 +24,8 @@
 		"*.{ts,js,json,md,prisma}": "prettier --write"
 	},
 	"dependencies": {
+		"@keyv/redis": "^5.1.4",
+		"@nestjs/cache-manager": "^3.0.1",
 		"@nestjs/common": "^11.0.1",
 		"@nestjs/config": "^4.0.2",
 		"@nestjs/core": "^11.0.1",
@@ -33,9 +35,14 @@
 		"@nestjs/swagger": "^11.2.1",
 		"@prisma/client": "^6.19.0",
 		"bcrypt": "^6.0.0",
+		"cache-manager": "^7.2.5",
+		"cache-manager-ioredis-yet": "^2.1.2",
+		"cache-manager-redis-store": "^3.0.1",
+		"cacheable": "^2.2.0",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.2",
 		"dotenv": "^17.2.3",
+		"ioredis": "^5.8.2",
 		"nestjs-i18n": "^10.5.1",
 		"passport": "^0.7.0",
 		"passport-jwt": "^4.0.1",
